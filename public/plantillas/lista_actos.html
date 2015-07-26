@@ -1,0 +1,15 @@
+ <div id="detalles">
+   <table align="center" class="table table-striped" ng-click="consola()">
+     <thead>Actos Seleccionados</thead>
+     <tbody>
+       <tr>
+         <td>Codigo</td>
+         <td>Descripcion</td>
+       </tr>
+       <tr ng-repeat="acto in dato">
+         <td>{{acto.codigo}}</td>
+         <td>{{acto.nombre_acto}}</td>
+       </tr>
+     </tbody>
+   </table>
+ </div>

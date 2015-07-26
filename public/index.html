@@ -14,7 +14,6 @@
   <script src="javascripts/lib's/ui-bootstrap-tpls-0.13.0.min.js"></script>
   <script src="javascripts/lib's/ng-grid-2.0.1.debug.js"></script>
   <script src="javascripts/lib's/angular-sanitize.js"></script>
-  
   <!--librerias extra-->
     <!--libreria para saber el sistema operativo y browser del cliente-->
     <script src="javascripts/lib's/scaner.js"></script>
@@ -41,60 +40,13 @@
  
  <label for="">{{contar}} </label>
  
- <div id="detalles">
-   <table align="center" class="table table-striped" ng-click="consola()">
-     <thead>Actos Seleccionados</thead>
-     <tbody>
-       <tr>
-         <td>Codigo</td>
-         <td>Descripcion</td>
-       </tr>
-       <tr ng-repeat="acto in seleccionados">
-         <td>{{acto.codigo}}</td>
-         <td>{{acto.nombre_acto}}</td>
-       </tr>
-     </tbody>
-   </table>
+ <div id="tabla-actos seleccionados" ng-hide="requisitos_seleccionados.length == 0">
+   <lista-actos dato="seleccionados"></lista-actos>
  </div>
  <br>
- <div id="requisitos">
-   <table class="table table-bordered">
-     <thead>
-       <tr>
-         <td>Nombre Requisito</td>
-         <td>Responsable</td>
-         <td>Observación</td> 
-         <td>OK</td>
-         <td>cargar Archivo</td>
-       </tr>
-     </thead>
-     <tbody id="inicio" ng-repeat="elemento in requisitos_seleccionados">
-         <tr ng-repeat="requisitos in elemento.requisitos"
-          ng-init="estadoActual[requisitos] = estado[0]; observacion[requisitos] = ''; archivos[requisitos] = []">
-           <th>{{requisitos}} </th>
-           <th> N/A </th>
-           <th  ng-click="agregarComentario(requisitos, elemento)">
-            <textarea cols="10" rows="10" disabled ng-model="observacion[requisitos]"></textarea>
-           </th>
-           <th ng-class="estadoActual[requisitos].color"  ng-click="cambiarEstado(requisitos)">
-            <label> {{estadoActual[requisitos].estado}}  </label> 
-           </th>
-           <th ng-click="seleccionar(requisitos)">
-             <label>
-               <label ng-show="archivos[requisitos].length == 0">
-                 cargar archivo
-               </label>
-               <label ng-hide="archivos[requisitos].length == 0"> 
-                 {{archivos[requisitos].length}}
-               </label> 
-             </label>
-<!--<input id="archivo" class="fileInput" selection-model="requisitos" type="file" style="display: none">-->
-             <input style="display: none" id="{{requisitos}}" class="fileInput" selection-model="file" type="file">
-           </th>
-         </tr>
-     </tbody>
-   </table>
- </div>
+<div id="tabla-requisitos seleccionados" ng-hide="requisitos_seleccionados.length == 0">
+  <lista-requisitos requeridos="requisitos_seleccionados"></lista-requisitos>
+</div>
  
  <div>
    <button class="btn btn-primary" ng-click="validarRadicacion()" ng-hide="requisitos_seleccionados.length == 0">Enviar</button>

@@ -73,7 +73,7 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
         console.log('control.js - 48::elemento ', codigo);
         var instanciaModal = $modal.open({
                 animation: true,
-                templateUrl: 'plantillas/plantilla.html',
+                templateUrl: 'plantillas/observacion.html',
                 controller: 'modalComentario',
                 size: 'sm',
                 resolve: {
@@ -124,10 +124,12 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
     }
 
     $scope.consola = function() {
-        console.log('control.js - 92::seleccionados', $scope.requisitos_seleccionados);
-        console.log('control.js - 93::observacion', $scope.observacion);
-        console.log('control.js - 94::estadoActual', $scope.estadoActual);
-        console.log('control.js - 95::archivos', $scope.archivos);
+        console.log('control.js - 127::seleccionados', $scope.requisitos_seleccionados);
+        console.log('control.js - 128::observacion', $scope.observacion);
+        console.log('control.js - 129::estadoActual', $scope.estadoActual);
+        console.log('control.js - 130::archivos', $scope.archivos);
+        console.log('control.js - 131::datos', datos);
+      
 
     }
 

@@ -6,10 +6,10 @@ var sistemaOperativo = BrowserDetect.OS,
 
 function horaActual() {
   var hoy = new Date(),
-    fecha = hoy.getFullYear() + '/' + hoy.getMonth() + '/' + hoy.getDay(),
+    fecha = hoy.getFullYear() + '/' + (hoy.getMonth() < 10 ? "0" + hoy.getMonth(): hoy.getMonth()) + '/' + (hoy.getDay() < 10 ? "0" + hoy.getDay(): hoy.getDay()),
         //hora actual del servidor (HH:mm)
     hora = ((hoy.getHours() < 10) ? '0' + hoy.getHours() : hoy.getHours()) + ":" + ((hoy.getMinutes() < 10) ? '0' + hoy.getMinutes() : hoy.getMinutes())
-  return fecha;
+  return {fecha:fecha, hora: hora};
 }
 
-var datos = {fechaInicio: horaActual(), OS: sistemaOperativo, browser: explorador, id: ''};
+var datos = {fechaInicio: horaActual().fecha, horaInicio: horaActual().hora, OS: sistemaOperativo, browser: explorador, id: ''};

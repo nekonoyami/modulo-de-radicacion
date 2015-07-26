@@ -1,15 +1,5 @@
 var app = angular.module("app", ['ngGrid', 'ui.bootstrap', 'ngSanitize'])
 
-.config(function($sceDelegateProvider) {
-    $sceDelegateProvider.resourceUrlWhitelist([
-        // Allow same origin resource loads.
-        'self',
-        // Allow loading from our assets domain.  Notice the difference between * and **.
-        '**'
-    ]);
-
-});
-
 /**
  * funcion que se encarga de buscar las posisciones de un elemento con el mismo "nombre_acto" dentro de una lista
  * y retornar un array donde estan las posiciones de los elementos repetidos

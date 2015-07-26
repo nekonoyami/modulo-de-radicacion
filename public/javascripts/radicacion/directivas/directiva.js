@@ -16,3 +16,21 @@ app.directive('selectionModel', function($parse, $sce) {
         }
     }
 })
+
+.directive('listaActos',function () {
+  return {
+    templateUrl: 'plantillas/lista_actos.html',
+    restrict: 'E',
+    scope: {datos: '='},
+    controller: 'control'
+  }
+})
+
+.directive('listaRequisitos',function () {
+  return {
+    templateUrl: 'plantillas/lista_requisitos.html',
+    restrict: 'E',
+    scope: {requeridos: '='},
+    controller: 'control'
+  }
+})
