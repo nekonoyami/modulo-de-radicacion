@@ -1,0 +1,24 @@
+<div id="tabla">
+  <div class="modal-header"><center><h3 class="modal-title"><label>{{id}} </label></h3> </center></div>
+  <div class="modal-body">
+    <table ng-mousemove="" class="table table-striped">
+      <tbody>
+        <tr ng-repeat="archivo in archivosCargados">
+          <td>Nombre</td>
+          <td>
+           <a ng-href="{{archivo.ruta}}" target="_blank"> {{archivo.archivo.name}}</a>
+          </td>
+          <td><span class="warning" ng-click="borrarArchivo($index)">Eliminar</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <div class="modal-footer">
+    <center>
+      <button class="btn btn-warning" ng-click="cerrar()">Cerrar</button>
+      <button class="btn btn-info" ng-click="agregarArchivo()">Agregar Archivo</button>
+<!--      <input id="{{id}}" type="file" style="display:none" selection-model="file">-->
+    </center>
+  </div>
+</div>

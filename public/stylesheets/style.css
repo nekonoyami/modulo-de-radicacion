@@ -1,0 +1,92 @@
+/* Styles go here */
+
+.ng-modal-overlay {
+  /* A dark translucent div that covers the whole screen */
+  position:absolute;
+  z-index:9999;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:#000000;
+  opacity: 0.5;
+}
+.ng-modal-overlay2 {
+  /* A green translucent div that covers the whole screen */
+  position:absolute;
+  z-index:9999;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:green;
+  opacity: 0.5;
+}
+.ng-modal-dialog {
+  /* A centered div above the overlay with a box shadow. */
+  z-index:10000;
+  position: absolute;
+  width: 50%; /* Default */
+
+  /* Center the dialog */
+  top: 25%;
+  left: 25%;
+  /*transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);*/
+
+  background-color: #fff;
+  box-shadow: 4px 4px 80px #000;
+}
+.ng-modal-dialog-content {
+  font-family:'Roboto';
+  font-size:14pt;
+  color: black;
+  padding:10px;
+  text-align: left;
+}
+.ng-modal-close {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 120%;
+  display: inline-block;
+  font-weight: bold;
+  font-family: 'arial', 'sans-serif';
+}
+
+/*-----------------------------------------------------------------
+		ANIMATIONS
+-------------------------------------------------------------------*/
+.ng-modal-dialog.ng-hide-add, .ng-modal-dialog.ng-hide-remove {
+	display:block!important;
+}
+.ng-modal-dialog.ng-hide-remove {
+    -webkit-animation: bounceIn 1s;
+    -moz-animation: bounceIn 1s;
+    -ms-animation: bounceIn 1s;
+    animation: bounceIn 1s;
+}
+
+.ng-modal-dialog.ng-hide-add {
+    -webkit-animation: bounceOut .8s;
+    -moz-animation: bounceOut .8s;
+    -ms-animation: bounceOut .8s;
+    animation: bounceOut .8s;
+}
+
+.ng-modal-dialog.ng-enter {
+    -webkit-animation: rollIn 1s;
+    -moz-animation: rollIn 1s;
+    -ms-animation: rollIn 1s;
+    animation: rollIn 1s;
+}
+
+.ng-modal-dialog.ng-leave {
+    -webkit-animation: bounceOut .8s;
+    -moz-animation: bounceOut .8s;
+    -ms-animation: bounceOut .8s;
+    animation: bounceOut .8s;
+}
