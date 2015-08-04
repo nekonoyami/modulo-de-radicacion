@@ -4,7 +4,7 @@ function abrirSeleccionador(id) {
 }
 
 //control principal de la pagina
-app.controller('control', function($scope, cargarActo, $modal, $timeout) {
+app.controller('control', function($scope, cargarActo, $modal, enviarRadicacion) {
     //scope que representa el array de los elemento seleccionados en el ng-grid
     $scope.seleccionados = [];
     //scope que guarda las observaciones que se muestran en la pagina (ventana)
@@ -42,7 +42,17 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
             }
             //se ejecuta si el elemento ha sido deseleccionado
             else {
-                $scope.requisitos_seleccionados = eleminarSalientes(elemento.entity, $scope.requisitos_seleccionados)
+                var jsons = {
+                    observaciones: $scope.observacion,
+                    estados: $scope.estadoActual,
+                    adjuntos: $scope.archivos
+                }
+                var resultados = eleminarSalientes(elemento.entity, $scope.requisitos_seleccionados, jsons)
+                $scope.requisitos_seleccionados = resultados.lista
+                $scope.observacion = resultados.datos.observaciones
+                $scope.archivos = resultados.datos.adjuntos
+                $scope.estadoActual = resultados.datos.estados
+
                 if ($scope.requisitos_seleccionados.length <= 0) {
                     $scope.observacion = {}
                     $scope.estadoActual = {}
@@ -56,12 +66,16 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
         }, {
             field: "codigo",
             displayName: "codigos",
+        }, {
+            field: "activo_acto",
+            displayName: "Esta activo"
         }]
     }
 
     //servicio de angular que se encarga de solicitar los actos con sus respectivos requisitos
     cargarActo.success(function(res) {
         $scope.actos = darFormato(res)
+        res = null
     })
 
     /**
@@ -87,11 +101,11 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
             //console.log('control.js - 45::index', index);
             $scope.observacion[index] = comentario
             if ($scope.observacion[index] !== '') {
-                $scope.estadoActual[index] = $scope.estado[3]
+                $scope.estadoActual[index].estado = $scope.estado[3]
                     //si el requisito tenia archivos adjuntos, estos son borrados si se escribe algun comentario
-                $scope.archivos = {}
+                $scope.archivos[index] = []
             } else
-                $scope.estadoActual[index] = $scope.estado[0]
+                $scope.estadoActual[index].estado = $scope.estado[0]
                 //console.log('.js - 62:: observacion', $scope.observacion);
                 //console.log('control.js - 63 :: parent' );
         })
@@ -99,6 +113,7 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
 
     //scope que se encarga de agregar los archivos que son seleccionados por el usuario
     $scope.seleccionar = function(id) {
+
         if ($scope.archivos[id].length > 0) {
             $modal.open({
                 animation: true,
@@ -115,36 +130,32 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
             })
 
         } else {
-            $timeout(function() {
-                    abrirSeleccionador(id)
-                }, 0, true)
+            abrirSeleccionador(id)
                 //si el requisito tiene un comentario, este es eliminado al momento de agregar algun archivo
             $scope.observacion[id] = ''
         }
     }
 
     $scope.consola = function() {
-        console.log('control.js - 127::seleccionados', $scope.requisitos_seleccionados);
-        console.log('control.js - 128::observacion', $scope.observacion);
-        console.log('control.js - 129::estadoActual', $scope.estadoActual);
-        console.log('control.js - 130::archivos', $scope.archivos);
-        console.log('control.js - 131::datos', datos);
-      
-
+        console.log('requisitos_seleccionados', $scope.requisitos_seleccionados);
+        console.log('observacion', $scope.observacion);
+        console.log('estadoActual', $scope.estadoActual);
+        console.log('archivos', $scope.archivos);
+        console.log('seleccionados', $scope.seleccionados);
     }
 
     //scope que se encarga de cambiar el estado de un requisito ('', N/A, PD, OK)
     $scope.cambiarEstado = function(indice) {
         var blCambiado = false
         console.log(indice);
-        if ($scope.estadoActual[indice].estado == $scope.estado[3].estado) {
-            $scope.estadoActual[indice] = $scope.estado[0]
+        if ($scope.estadoActual[indice].estado.estado == $scope.estado[3].estado) {
+            $scope.estadoActual[indice].estado = $scope.estado[0]
             $scope.observacion[indice] = ''
-            $scope.archivos = {}
+            $scope.archivos[indice] = []
         } else {
             for (var i = 0; i < $scope.estado.length && !blCambiado; i++) {
-                if ($scope.estadoActual[indice].estado == $scope.estado[i].estado) {
-                    $scope.estadoActual[indice] = $scope.estado[i + 1]
+                if ($scope.estadoActual[indice].estado.estado == $scope.estado[i].estado) {
+                    $scope.estadoActual[indice].estado = $scope.estado[i + 1]
                     blCambiado = true
                 }
             }
@@ -156,48 +167,60 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
     $scope.validarRadicacion = function() {
         var blInvalido = false,
             mensaje = 'por favor verifique que el/los siguientes requisitos esten bien diligenciados \n',
+            faltantes = [],
+            archivos = [],
             requisitos = [],
-            paraEnviar = [];
+            actos = [];
         /**
          * se recorren las litas que contienen (archivos, observaciones), teniendo encuenta el estado actual
          * de cada requisito y se valida si tiene archivos adjuntos o comentarios segun el estado el cual tengan
          * actualmente
          **/
         angular.forEach($scope.estadoActual, function(valor, llave, obj) {
-                console.log('control.js - 143::llave', llave);
-                console.log('control.js - 143::valor', valor);
+                //console.log('llave', llave);
+                //console.log('valor', valor);
                 //se valida que el estado no este como vacio = '' o si esta como PD (comentario) tenga un comentario
-                if (valor.estado == '' || (valor.estado == 'PD' && $scope.observacion[llave] == '')) {
-                    requisitos.push(llave)
+                if (valor.estado.estado == '' || (valor.estado.estado == 'PD' && $scope.observacion[llave] == '')) {
+                    faltantes.push(llave)
                     blInvalido = true
                         //se valida que si un requisito esta como OK entonces por lo menos tenga un archivo adjunto
-                } else if ($scope.archivos[llave].length == 0 && valor.estado == 'OK') {
-                  requisitos.push("el requisito: " + llave + "esta en 'OK' pero no tiene ningun archivo adjunto \n")
+                } else if ($scope.archivos[llave].length == 0 && valor.estado.estado == 'OK') {
+                    faltantes.push("el requisito: " + llave + ", esta en 'OK' pero no tiene ningun archivo adjunto \n")
                     blInvalido = true
                 }
                 if (!blInvalido) {
-                    if (valor.estado == 'OK') {
-                        paraEnviar.push({
+                    if (valor.estado.estado == 'OK') {
+                        requisitos.push({
+                            id: valor.id_req,
                             requisito: llave,
-                            archivos: $scope.archivos[llave]
+                            protocolo: valor.protocolo,
+                            comentario: 'OK'
+                        })
+                        for (var i = 0; i < $scope.archivos[llave].length; i++) {
+                            archivos.push($scope.archivos[llave][i].archivo)
+                        }
+                    }
+                    if (valor.estado.estado == 'PD') {
+                        requisitos.push({
+                            id: valor.id_req,
+                            requisito: llave,
+                            comentario: $scope.observacion[llave],
+                            protocolo: valor.protocolo,
                         })
                     }
-                    if (valor.estado == 'PD') {
-                        paraEnviar.push({
+                    if (valor.estado.estado == 'N/A') {
+                        requisitos.push({
+                            id: valor.id_req,
                             requisito: llave,
-                            comentario: $scope.observacion[llave]
-                        })
-                    }
-                    if (valor.estado == 'N/A') {
-                        paraEnviar.push({
-                            requisito: llave,
-                            comentario: 'N/A'
+                            comentario: 'N/A',
+                            protocolo: valor.protocolo,
                         })
                     }
                 }
             })
             //si algun requisito no esta correctamente diligenciado se muestra una ventana avisando del error
         if (blInvalido) {
+            requisitos = []
             $modal.open({
                 animation: true,
                 templateUrl: 'plantillas/advertencia.html',
@@ -206,14 +229,23 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
                     lista: function() {
                         return {
                             mensaje: mensaje,
-                            advertencia: requisitos
+                            advertencia: faltantes
                         }
                     }
                 }
             })
         } //fin del if
         else {
-
+            //se recojen los actos seleccionados
+            for (var i = 0; i < $scope.seleccionados.length; i++) {
+                actos.push({
+                    nombre: $scope.seleccionados[i].nombre_acto,
+                    codigo: $scope.seleccionados[i].codigo
+                })
+            }
+            enviarRadicacion.enviarRadicacion(requisitos, actos, archivos).then(function(res) {
+                console.log('respuesta', res);
+            })
         }
 
     }
@@ -225,7 +257,7 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
 //control que corresponde a la ventana modalv 
 .controller('modalComentario', function($scope, $modalInstance, comentario) {
 
-    console.log('control.js - 56:: comentario', comentario);
+    console.log('comentario', comentario);
     $scope.comment = comentario
     $scope.cancelar = function() {
         $modalInstance.dismiss('cancel')
@@ -236,16 +268,14 @@ app.controller('control', function($scope, cargarActo, $modal, $timeout) {
     }
 })
 
-.controller('modalArchivos', function($scope, lista, $modalInstance, $timeout) {
+.controller('modalArchivos', function($scope, lista, $modalInstance) {
 
     $scope.id = lista.indice;
     $scope.archivosCargados = lista.listaArchivos;
     console.log($scope.archivosCargados);
 
     $scope.agregarArchivo = function() {
-        $timeout(function() {
-            abrirSeleccionador($scope.id)
-        }, 0, true)
+        abrirSeleccionador($scope.id)
     }
 
     $scope.borrarArchivo = function(indice) {

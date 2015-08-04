@@ -11,7 +11,7 @@ app.directive('selectionModel', function($parse, $sce) {
               console.log(ruta);
              // console.log($sce.trustAsResourceUrl(ruta));
               $scope.archivos[attrs.id].push({archivo: elem[0].files[0], ruta: ruta})
-              elem.value = ''
+              elem[0].value = ''
             })
         }
     }
@@ -20,8 +20,8 @@ app.directive('selectionModel', function($parse, $sce) {
 .directive('listaActos',function () {
   return {
     templateUrl: 'plantillas/lista_actos.html',
-    restrict: 'E',
-    scope: {datos: '='},
+    restrict: 'EA',
+    scope: {dato: '='},
     controller: 'control'
   }
 })
@@ -29,7 +29,7 @@ app.directive('selectionModel', function($parse, $sce) {
 .directive('listaRequisitos',function () {
   return {
     templateUrl: 'plantillas/lista_requisitos.html',
-    restrict: 'E',
+    restrict: 'EA',
     scope: {requeridos: '='},
     controller: 'control'
   }

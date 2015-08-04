@@ -1,5 +1,15 @@
 var app = angular.module("app", ['ngGrid', 'ui.bootstrap', 'ngSanitize'])
 
+.config(function($sceDelegateProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist([
+        // Allow same origin resource loads.
+        'self',
+        // Allow loading from our assets domain.  Notice the difference between * and **.
+        '**'
+    ]);
+
+});
+
 /**
  * funcion que se encarga de buscar las posisciones de un elemento con el mismo "nombre_acto" dentro de una lista
  * y retornar un array donde estan las posiciones de los elementos repetidos
@@ -36,15 +46,21 @@ function darFormato(array) {
             var requisitos = [],
                 nombre = '',
                 id = '',
-                codigo = '';
+                codigo = '',
+                activo = '';
             for (var j = 0; j < repetidos.length; j++) {
                 //id_actos.push(lista[repetidos[j]].id_acto)
                 //console.log('app.js - 27 :: pos', repetidos[j]);
                 //console.log('app.js - 28 :: lista', lista);
                 nombre = lista[repetidos[j]].nombre_acto
                 id = lista[repetidos[j]].id_acto
-                requisitos.push(lista[repetidos[j]].Requisito)
+                requisitos.push({
+                    requisito: lista[repetidos[j]].Requisito,
+                    id_req: lista[repetidos[j]].id_req,
+                    protocolo: lista[repetidos[j]].protocolo
+                })
                 codigo = lista[repetidos[j]].codigo
+                activo = lista[repetidos[j]].activo_acto
                 lista[repetidos[j]] = 'vacio'
             }
 
@@ -53,7 +69,8 @@ function darFormato(array) {
                     id_acto: id,
                     nombre_acto: nombre,
                     codigo: codigo,
-                    Requisito: requisitos
+                    Requisito: requisitos,
+                    activo_acto: activo
                 })
                 /*            var nuevo = borrarRepetidos(lista, repetidos)
                             console.log(nuevo);
@@ -117,7 +134,7 @@ function requisitosRepetidos(seleccionados, requisitos) {
 function existe(elemento, lista) {
     for (var i = 0; i < lista.length; i++) {
         for (var j = 0; j < lista[i].requisitos.length; j++) {
-            if (elemento === lista[i].requisitos[j])
+            if (elemento.requisito === lista[i].requisitos[j].requisito)
                 return true
         }
     }
@@ -132,7 +149,7 @@ function existe(elemento, lista) {
  *               en que esta funcion es invocada
  **/
 
-function eleminarSalientes(saliente, lista) {
+function eleminarSalientes(saliente, lista, json) {
     //variable que guarda la posicion del requisito y su obejeto padre
     var resultado;
     //se recorre la lista de requisitos del elemento que fue deseleccionado
@@ -140,8 +157,8 @@ function eleminarSalientes(saliente, lista) {
         if (!seMuestraRequisito(saliente.codigo, saliente.Requisito[i], lista)) {
             resultado = existeRepetido(saliente.Requisito[i], lista);
             if (resultado.boolean) {
-            //se obtiene el un requisito de un elemento en su lista de repetidos y se cambia a su lista de requisitos  
-               lista[resultado.posOjeto].requisitos.push(lista[resultado.posOjeto].repetidos[resultado.posRequisito])
+                //se obtiene un requisito de un elemento en su lista de repetidos y se cambia a su lista de requisitos  
+                lista[resultado.posOjeto].requisitos.push(lista[resultado.posOjeto].repetidos[resultado.posRequisito])
                     //se elimina el elemento de la lista de repetidos
                 lista[resultado.posOjeto].repetidos.splice(resultado.posRequisito, 1)
             }
@@ -149,17 +166,26 @@ function eleminarSalientes(saliente, lista) {
     }
     //se recorre la lista de requisitos
     for (var i = 0; i < lista.length; i++) {
-      //se elimina el requisito que fue deseleccionado de la lista principal (la cual esta representada por "lista") 
-        if (lista[i].codigo === saliente.codigo)
+        if (lista[i].codigo === saliente.codigo) {
+            for (var j = 0; j < lista[i].requisitos.length; j++) {
+                delete json.adjuntos[lista[i].requisitos[j].requisito]
+                delete json.estados[lista[i].requisitos[j].requisito]
+                delete json.observaciones[lista[i].requisitos[j].requisito]
+            }
+            //se elimina el requisito que fue deseleccionado de la lista principal (la cual esta representada por "lista") 
             lista.splice(i, 1)
+        }
     }
-    return lista
+    return {
+        lista: lista,
+        datos: json
+    }
 }
 
 function existeRepetido(elemento, lista) {
     for (var i = 0; i < lista.length; i++) {
         for (var j = 0; j < lista[i].repetidos.length; j++) {
-            if (elemento === lista[i].repetidos[j])
+            if (elemento.requisito === lista[i].repetidos[j].requisito)
                 return {
                     boolean: true,
                     posOjeto: i,
@@ -185,7 +211,7 @@ function seMuestraRequisito(codigo, elemento, lista) {
     for (var i = 0; i < lista.length; i++) {
         if (!(lista[i].codigo === codigo)) {
             for (var j = 0; j < lista[i].requisitos.length; j++) {
-                if (elemento === lista[i].requisitos[j])
+                if (elemento.requisito === lista[i].requisitos[j].requisito)
                     return true
             }
         }
