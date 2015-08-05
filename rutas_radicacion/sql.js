@@ -19,3 +19,12 @@ exports.sqlRequisitos = function(requisitos, datos, req, res) {
 
     })
 }
+
+// query para validar el acceso del usuario   
+exports.validarUsuario = function (usuario , clave) {
+    var query = 'select *  from usuarios where usuario='+"'"+usuario+"' && clave ='" +clave +"'";
+//    var query = 'select * from usuarios';
+    return query;
+}
+
+

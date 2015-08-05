@@ -37,8 +37,8 @@ app.use(conexion(mysql, dbOption, 'request'))
     //middleware que permite la transferencia de archivos
 app.use(multyparty());
 var radicar = require('./rutas_radicacion/rutas');
-app.use('/', routes);
-app.use('/users', users);
+//app.use('/', routes);
+//app.use('/users', users);
 app.use('/radicacion', radicar)
 
 //conexion con la base de datos
