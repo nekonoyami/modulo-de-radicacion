@@ -218,3 +218,5 @@ function seMuestraRequisito(codigo, elemento, lista) {
     }
     return false
 }
+
+// conexion repositorio
