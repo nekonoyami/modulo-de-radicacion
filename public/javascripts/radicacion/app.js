@@ -60,9 +60,8 @@ app.factory("auth", function ($cookies, $cookieStore, $location, $http, $window)
                         // se evalua si el usuario (ACTIVO = SI) tiene los permisos para acceder
                         if(letraAcesso > 0){
                         $window.alert("MENSAJE: " + "\n" + "Bienvenido usuario  -> " + username);
-                        //creamos la cookie con el nombre que nos han pasado
-                        $cookies.username = username;
-                        // $cookieStore.username = username;
+                         //creamos la cookie con el nombre que nos han pasado como usuario
+                        $cookies.put('username', username);
 
                         //                       $window.location.href="../templates/proceso.html";
                         $location.path('/procesoRadicacion');
@@ -89,11 +88,10 @@ app.factory("auth", function ($cookies, $cookieStore, $location, $http, $window)
 
             $location.path('/');
             $cookieStore.remove("username");
-
         },
         checkStatus: function () {
             //creamos un array con las rutas que queremos controlar
-            var rutasPrivadas = ["/procesoRadicacion", "/dashboard", "/"];
+            var rutasPrivadas = ["/procesoRadicacion","/"];
             // controlamos el acceso a las rutas con la cookie almacenada en accesoCookie
             accesoCookie = $cookies.get('username');
             // en caso de que el usuario intente accerder a los procesos sin estar logueado
@@ -669,4 +667,13 @@ function seMuestraRequisito(codigo, elemento, lista) {
     return false
 }
 
-// conexion repositorio
+
+//mientras corre la aplicación, comprobamos si el usuario tiene acceso a la ruta a la que está accediendo
+app.run(function ($rootScope, auth) {
+    //al cambiar de rutas
+    $rootScope.$on('$routeChangeStart', function () {
+        //llamamos a checkStatus, el cual lo hemos definido en la factoria auth
+        //la cuál hemos inyectado en la acción run de la aplicación
+        auth.checkStatus();
+    })
+})
