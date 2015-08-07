@@ -1,0 +1,23 @@
+
+<body>
+    <form name="loginUserForm" >
+    <fieldset>
+        <legend>login </legend>
+ 
+        <div class="row">
+            <div class="large-12 columns">
+                <label>Usuario</label>
+                <input type="text" required placeholder="Introduce tu usuario" ng-model="username" name="usuario">
+            </div>
+            <div class="large-12 columns">
+                <label>Contraseña</label>
+                <input type="password" required placeholder="Introduce tu contraseña" ng-model="password" name="contraseña">
+            </div>
+ 
+            <button type="submit" ng-disabled="!loginUserForm.$valid" ng-click="login(username , password)" class="button expand round">Login</button>
+        </div>
+    </fieldset>
+</form>
+</body>
+
+

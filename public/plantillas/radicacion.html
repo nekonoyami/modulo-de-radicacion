@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="app" lang="" ng-mousemove="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--librerias css para angular -->
+ 
+  <title>Modulo de radicacion</title>
+</head>
+
+<body ng-controller="control">
+  
+  
+ <div id="grilla" class="gridStyle" ng-grid="gridOptions"></div>
+ 
+ <label for="">{{contar}} </label>
+ 
+ <div id="detalles">
+   <table align="center" class="table table-striped" ng-click="consola()">
+     <thead>Actos Seleccionados</thead>
+     <tbody>
+       <tr>
+         <td>Codigo</td>
+         <td>Descripcion</td>
+       </tr>
+       <tr ng-repeat="acto in seleccionados">
+         <td>{{acto.codigo}}</td>
+         <td>{{acto.nombre_acto}}</td>
+       </tr>
+     </tbody>
+   </table>
+ </div>
+ <br>
+ <div id="requisitos">
+   <table class="table table-bordered">
+     <thead>
+       <tr>
+         <td>Nombre Requisito</td>
+         <td>Responsable</td>
+         <td>Observación</td> 
+         <td>OK</td>
+         <td>cargar Archivo</td>
+       </tr>
+     </thead>
+     <tbody id="inicio" ng-repeat="elemento in requisitos_seleccionados">
+         <tr ng-repeat="requisitos in elemento.requisitos"
+          ng-init="estadoActual[requisitos.requisito] = {estado:estado[0], id_req:requisitos.id_req, protocolo:requisitos.protocolo}; observacion[requisitos.requisito] = ''; archivos[requisitos.requisito] = []">
+           <th>{{requisitos.requisito}} </th>
+           <th> N/A </th>
+           <th  ng-click="agregarComentario(requisitos.requisito, elemento)">
+            <textarea cols="10" rows="10" disabled ng-model="observacion[requisitos.requisito]"></textarea>
+           </th>
+           <th ng-class="estadoActual[requisitos.requisito].estado.color"  ng-click="cambiarEstado(requisitos.requisito)">
+            <label> {{estadoActual[requisitos.requisito].estado.estado}}  </label> 
+           </th>
+           <th ng-click="seleccionar(requisitos.requisito)">
+             <label>
+               <label ng-show="archivos[requisitos.requisito].length == 0">
+                 cargar archivo
+               </label>
+               <label ng-hide="archivos[requisitos.requisito].length == 0"> 
+                 {{archivos[requisitos.requisito].length}}
+               </label> 
+             </label>
+             <input style="display: none" id="{{requisitos.requisito}}" class="fileInput" selection-model="file" type="file" multiple>
+           </th>
+         </tr>
+     </tbody>
+   </table>
+ </div>
+ 
+ 
+ 
+<!-- <div id="lista actos">
+   <lista-actos dato="seleccionados"></lista-actos>
+ </div>
+ 
+ <div class="lista requisitos">
+   <lista-requisitos requeridos="requisitos_seleccionados"></lista-requisitos>
+ </div>-->
+ 
+ <div>
+   <button class="btn btn-primary" ng-click="validarRadicacion()" ng-hide="requisitos_seleccionados.length == 0">Enviar</button>
+ </div>
+<!-- <div ng-repeat-end></div>-->
+</body>
+</html>
+

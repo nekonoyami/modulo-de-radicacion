@@ -1,114 +1,65 @@
-<!DOCTYPE html>
-<html ng-app="app" lang="" ng-mousemove="">
+<!doctype html>
+<html ng-app="app">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--librerias css para angular -->
+    <meta charset="utf-8">
+    <title> Login </title>
+    <link rel="stylesheet" href="stylesheets/normalize.css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/foundation.min.css" media="screen" />
+    <!--librerias css para angular -->
   <link rel="stylesheet" href="stylesheets/ng-grid.css">
   <!--bootrap-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <!--libreria de jqury-->
-  <script src="javascripts/lib's/jquery.js"></script>
-  <!--libreiras de angular -->
-  <script src="javascripts/lib's/angular.js"></script>
-  <script src="javascripts/lib's/ui-bootstrap-tpls-0.13.0.min.js"></script>
-  <script src="javascripts/lib's/ng-grid-2.0.1.debug.js"></script>
-  <script src="javascripts/lib's/angular-sanitize.js"></script>
-  
-  <!--librerias extra-->
-    <!--libreria para saber el sistema operativo y browser del cliente-->
-    <script src="javascripts/lib's/scaner.js"></script>
-    <!--archivo para obtener datos del cliente -->
-    <script src="javascripts/radicacion/util.js"></script>
-  <!--moulo principal de angualar-->
-  <script src="javascripts/radicacion/app.js"></script>
-  
-  <!--controles-->
-  <script src="javascripts/radicacion/controles/control.js"></script>
-  
-  <!--servicios-->
-  <script src="javascripts/radicacion/servicios/servicio.js"></script>
-  
-  <!--directivas-->
-  <script src="javascripts/radicacion/directivas/directiva.js"></script>
-  <title>Modulo de radicacion</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 
-<body ng-controller="control">
-  
-  
- <div id="grilla" class="gridStyle" ng-grid="gridOptions"></div>
- 
- <label for="">{{contar}} </label>
- 
- <div id="detalles">
-   <table align="center" class="table table-striped" ng-click="consola()">
-     <thead>Actos Seleccionados</thead>
-     <tbody>
-       <tr>
-         <td>Codigo</td>
-         <td>Descripcion</td>
-       </tr>
-       <tr ng-repeat="acto in seleccionados">
-         <td>{{acto.codigo}}</td>
-         <td>{{acto.nombre_acto}}</td>
-       </tr>
-     </tbody>
-   </table>
- </div>
- <br>
- <div id="requisitos">
-   <table class="table table-bordered">
-     <thead>
-       <tr>
-         <td>Nombre Requisito</td>
-         <td>Responsable</td>
-         <td>Observación</td> 
-         <td>OK</td>
-         <td>cargar Archivo</td>
-       </tr>
-     </thead>
-     <tbody id="inicio" ng-repeat="elemento in requisitos_seleccionados">
-         <tr ng-repeat="requisitos in elemento.requisitos"
-          ng-init="estadoActual[requisitos.requisito] = {estado:estado[0], id_req:requisitos.id_req, protocolo:requisitos.protocolo}; observacion[requisitos.requisito] = ''; archivos[requisitos.requisito] = []">
-           <th>{{requisitos.requisito}} </th>
-           <th> N/A </th>
-           <th  ng-click="agregarComentario(requisitos.requisito, elemento)">
-            <textarea cols="10" rows="10" disabled ng-model="observacion[requisitos.requisito]"></textarea>
-           </th>
-           <th ng-class="estadoActual[requisitos.requisito].estado.color"  ng-click="cambiarEstado(requisitos.requisito)">
-            <label> {{estadoActual[requisitos.requisito].estado.estado}}  </label> 
-           </th>
-           <th ng-click="seleccionar(requisitos.requisito)">
-             <label>
-               <label ng-show="archivos[requisitos.requisito].length == 0">
-                 cargar archivo
-               </label>
-               <label ng-hide="archivos[requisitos.requisito].length == 0"> 
-                 {{archivos[requisitos.requisito].length}}
-               </label> 
-             </label>
-             <input style="display: none" id="{{requisitos.requisito}}" class="fileInput" selection-model="file" type="file" multiple>
-           </th>
-         </tr>
-     </tbody>
-   </table>
- </div>
- 
- 
- 
-<!-- <div id="lista actos">
-   <lista-actos dato="seleccionados"></lista-actos>
- </div>
- 
- <div class="lista requisitos">
-   <lista-requisitos requeridos="requisitos_seleccionados"></lista-requisitos>
- </div>-->
- 
- <div>
-   <button class="btn btn-primary" ng-click="validarRadicacion()" ng-hide="requisitos_seleccionados.length == 0">Enviar</button>
- </div>
-<!-- <div ng-repeat-end></div>-->
-</body>
-</html>
+<body>
 
+    <!--   TITULO DE LA APLICACION    -->
+    <h1>Modulo radicacion</h1>
+
+    <!-- AQUI SE CARGARAN LAS VISTAS   -->
+    <div ng-view></div>
+
+</body>
+
+
+<!--librerias-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>-->
+
+<!--libreria de jqury-->
+<script src="javascripts/lib's/jquery.js"></script>
+<!--libreiras de angular -->
+<script src="javascripts/lib's/angular.js"></script>
+<script src="javascripts/lib's/ui-bootstrap-tpls-0.13.0.min.js"></script>
+<script src="javascripts/lib's/ng-grid-2.0.1.debug.js"></script>
+<script src="javascripts/lib's/angular-sanitize.js"></script>
+
+<!--librerias extra-->
+<!--libreria para saber el sistema operativo y browser del cliente-->
+<script src="javascripts/lib's/scaner.js"></script>
+<!--archivo para obtener datos del cliente -->
+<script src="javascripts/radicacion/util.js"></script>
+<!--moulo principal de angualar-->
+<script src="javascripts/radicacion/app.js"></script>
+
+<!--servicios-->
+<script src="javascripts/radicacion/servicios/servicio.js"></script>
+
+<!--directivas-->
+<script src="javascripts/radicacion/directivas/directiva.js"></script>
+
+
+<script src="javascripts/lib's/angular-cookies.js"></script>
+<script src="javascripts/lib's/angular-route.js"></script>
+<!--<script src="javascripts/lib's/jquery.js"></script>-->
+<script src="javascripts/lib's/ui-bootstrap-tpls-0.13.0.min.js"></script>
+
+
+
+<!--<script src="javascripts/plantillaPDF.js"></script>-->
+
+</html>
