@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 var app = angular.module('app', ['ngSanitize', 'ui.bootstrap', 'ngCookies', 'ngRoute'])
+=======
+var app = angular.module('app', ['ngSanitize', 'ui.bootstrap', 'ngCookies', 'ngRoute', 'ngGrid'])
+>>>>>>> origin/master
 
 
 //.config(function($sceDelegateProvider) {

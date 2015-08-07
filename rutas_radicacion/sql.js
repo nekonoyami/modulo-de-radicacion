@@ -26,5 +26,8 @@ exports.validarUsuario = function (usuario , clave) {
 //    var query = 'select * from usuarios';
     return query;
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
