@@ -180,10 +180,13 @@ app.controller('control', function($scope, cargarActo, $modal, enviarRadicacion)
     $scope.estadoActual = {},
         //scope que guarda los json en los cuales se guarda los requisitos de los actos que se han seleccionado
         $scope.requisitos_seleccionados = [];
+    
     //scope que corresponde a las opciones del ng-grid
     $scope.gridOptions = {
         data: 'actos',
         showFooter: true,
+        // filtro de la tabla
+        showFilter : true,
         selectedItems: $scope.seleccionados,
         //funcion que se activa despues de seleccionar o deseleccionar un elemento del ng-grid
         afterSelectionChange: function(elemento) {
