@@ -1,4 +1,11 @@
+<style type="text/css">
 
+  input.error {
+	background-color:#FF9;
+	border: 1px solid red;
+}
+
+</style>
 <body>
     <form name="loginUserForm" >
     <fieldset>
@@ -7,11 +14,11 @@
         <div class="row">
             <div class="large-12 columns">
                 <label>Usuario</label>
-                <input type="text" required placeholder="Introduce tu usuario" ng-model="username" name="usuario">
+                <input type="text" required placeholder="Introduce tu usuario" ng-model="username" name="usuario" onblur="revisarObligatorio(this)">
             </div>
             <div class="large-12 columns">
                 <label>Contraseña</label>
-                <input type="password" required placeholder="Introduce tu contraseña" ng-model="password" name="contraseña">
+                <input type="password" required placeholder="Introduce tu contraseña" ng-model="password" name="contraseña" onblur="revisarObligatorio(this)">
             </div>
  
             <button type="submit" ng-disabled="!loginUserForm.$valid" ng-click="login(username , password)" class="button expand round">Login</button>
